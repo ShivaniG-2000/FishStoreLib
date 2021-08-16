@@ -14,20 +14,25 @@ namespace FishStoreLib
 
         // Fish food data.
         public string fishFood { get; set; }
+
+        public decimal foodPrice { get; set; }
         public decimal foodQuantity { get; set; }
 
         // fish tank data.
 
         public string fishTank { get; set; }
+        public decimal TankPrice { get; set; }
 
 
         public Fish ()
         {
-            fishName = "Goldfish";
-            Price = 1000.00m;
-            fishFood = "pallets";
+            fishName = "Not Chosen";
+            Price = 0.00m;
+            fishFood = "Not Chosen";
             foodQuantity = 50.00m;
-            fishTank = "Freshwater Tropical Aquarium";
+            fishTank = "Not Chosen";
+            TankPrice = 0.00m;
+            foodPrice = 0.00m;
 
         }
 
