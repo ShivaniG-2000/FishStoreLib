@@ -3,13 +3,17 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using ConsoleTables;
 
 namespace FishStoreConsole
 {
     class Program
     {
-      public  static void Main(string[] args)
+      public  static void Main()
         {
+            Console.Clear();
             store s = new store();
             
             Console.WriteLine("-------------------------------------     WELCOME TO OUR FISH STORE.    ---------------------------------------");
@@ -23,7 +27,7 @@ namespace FishStoreConsole
             //ChoseItem();
              switch (chooseoption)
              {
-                 case 1: break;
+                 case 1: Menu(); break;
                 case 2: ChoseItem(); break;
 
              } 
@@ -33,15 +37,18 @@ namespace FishStoreConsole
 
         }
 
-     /*   public static int chooseAction()
+        #region code for later use
+		/*   public static int chooseAction()
         {
             int choice = 0;
 
             Console.WriteLine("1. Add Products to inventory\n2. Add Products to cart\n3. Checkout\nChoose one option: ");
             choice = int.Parse(Console.ReadLine());
             return choice;
-        } */
-         static void ChoseItem()
+        } */ 
+	#endregion
+
+        static void ChoseItem()
         {
             string[] F_types = { "Goldfish", "Angelfish", "African Leaf Fish", "Oscar", "Tiger barb", "Rummy nose tetra", "Neotetra" };
             decimal[] F_price = { 100.00m, 150.00m, 200.00m, 250.00m, 300.00m, 350.00m, 400.00m };
@@ -172,7 +179,115 @@ namespace FishStoreConsole
 
         }
 
+        const string xmlfile = @"D:\Fish_Store\FishStoreLib\FishStoreLib\CustomerDetails1.xml";
+
+        static void Menu()
+        {
+            Console.WriteLine("1. Add\n2. Get Details\n3. Update\n4. Delete\n5. Exit");
+            Console.Write("Choose an ooption :  ");
+            var input = Console.ReadLine();
+            PerformSelectedAction(input);
+        }
+
+        static void PerformSelectedAction(string input)
+        {
+            switch(input)
+            {
+                case "1": Console.Clear();
+                    Console.WriteLine("Customer ID : ");
+                    var id = Console.ReadLine();
+                    Console.WriteLine("Customer Name : ");
+                    var name = Console.ReadLine();
+                    Console.WriteLine("Customer Email : ");
+                    var mail = Console.ReadLine();
+                    Console.WriteLine("Customer Password : ");
+                    var pass = Console.ReadLine();
+                    AddCustomer(new customer(int.Parse(id), name , mail, pass));
+                    ContinueOrExit();
+                    break;
+
+                case "2":
+                    Console.Clear();
+                    GetCustomer();
+                    ContinueOrExit();
+                    break;
+                case "3":
+                    Console.Clear();
+                    Console.WriteLine("Customer ID : ");
+                     id = Console.ReadLine();
+                    Console.WriteLine("Customer Email : ");
+                     mail = Console.ReadLine();
+                    Console.WriteLine("Customer Password : ");
+                     pass = Console.ReadLine();
+                    updateCustomername(id, mail , pass);
+                    ContinueOrExit();
+                    break;
+                case "4":
+                    Console.Clear();
+                    Console.WriteLine("Customer ID : ");
+                    id = Console.ReadLine();
+                    deleteCustomer(id);
+
+                    ContinueOrExit();
+                    break;
+
+                default: Console.WriteLine("Exited successfully. "); break;
+            }
+        }
+
+        static void ContinueOrExit()
+        {
+            Console.WriteLine("Do you want to continue? y/n");
+            var result = Console.ReadLine();
+            if (result == "y" || result == "Y") Menu();
+            else Main();
+        }
+        static void deleteCustomer(string id)
+        {
+            var xdoc = XDocument.Load(xmlfile);
+            var tgtcustomer = xdoc.Root.Descendants("CUSTOMER").FirstOrDefault(x => x.Attribute("id").Value == id);
+            tgtcustomer.Remove();
+            xdoc.Save(xmlfile);
+
+            Console.WriteLine("Customer details deleted successfully.");
+
+        }
+        static void updateCustomername(string id, string newEmail, string newPass)
+        {
+            var xdoc = XDocument.Load(xmlfile);
+            var tgtUpdate = xdoc.Root.Descendants("CUSTOMER").FirstOrDefault(x => x.Attribute("id").Value == id);
+            tgtUpdate.Element("EMAIL").Value = newEmail;
+            tgtUpdate.Element("PASS").Value = newPass;
+            xdoc.Save(xmlfile);
+            Console.WriteLine("Name updated successfully.");
+
+        }
+        static void GetCustomer()
+        {
+            var xdoc = XDocument.Load(xmlfile);
+            var getcust = xdoc.Root.Descendants("CUSTOMER").Select(x => new customer(int.Parse(x.Attribute("id").Value), x.Element("NAME").Value, x.Element("EMAIL").Value, x.Element("PASS").Value));
+
+            Console.WriteLine("The Customer Data is as follows : \n\n");
+            var table = new ConsoleTable("ID", "Name", "Email");
+            foreach (var m in getcust)
+            {
+                table.AddRow(m.id, m.name, m.email);
+            }
+            table.Write();
+
+        }
+        static void AddCustomer(customer cust)
+        {
+            // var cust = new customer(3 , "Albert");
+            var xdoc = XDocument.Load(xmlfile);
+            var xelement = new XElement("CUSTOMER", new XAttribute("id", cust.id), new XElement("NAME", cust.name), new XElement("EMAIL", cust.email), new XElement("PASS", cust.password));
+            xdoc.Root.Add(xelement);
+            xdoc.Save(xmlfile);
+            Console.WriteLine("Customer details added");
+        }
 
 
-    }
+    
+
+}
 }
