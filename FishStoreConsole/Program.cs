@@ -9,32 +9,23 @@ using ConsoleTables;
 
 namespace FishStoreConsole
 {
-    class Program
+  public  class Program
     {
       public  static void Main()
         {
             Console.Clear();
-            store s = new store();
+          //  store s = new store();
+          //  customer cus = new customer();
             
             Console.WriteLine("-------------------------------------     WELCOME TO OUR FISH STORE.    ---------------------------------------");
 
-           // int action ;
-
-            
-            
-            Console.Write("1.Create account\n2.Choose store Location\nChoose one option :   ");
+            Console.Write("1.customer Information\n2.Choose store Location\nChoose one option :   ");
             int chooseoption = int.Parse(Console.ReadLine());
-            //ChoseItem();
              switch (chooseoption)
              {
                  case 1: Menu(); break;
                 case 2: ChoseItem(); break;
-
-             } 
-
-
-
-
+             }
         }
 
         #region code for later use
@@ -179,7 +170,7 @@ namespace FishStoreConsole
 
         }
 
-        const string xmlfile = @"D:\Fish_Store\FishStoreLib\FishStoreLib\CustomerDetails1.xml";
+     //   const string xmlfile = @"D:\Fish_Store\FishStoreLib\FishStoreLib\CustomerDetails1.xml";
 
         static void Menu()
         {
@@ -191,7 +182,8 @@ namespace FishStoreConsole
 
         static void PerformSelectedAction(string input)
         {
-            switch(input)
+            customer cus = new customer();
+            switch (input)
             {
                 case "1": Console.Clear();
                     Console.WriteLine("Customer ID : ");
@@ -202,13 +194,13 @@ namespace FishStoreConsole
                     var mail = Console.ReadLine();
                     Console.WriteLine("Customer Password : ");
                     var pass = Console.ReadLine();
-                    AddCustomer(new customer(int.Parse(id), name , mail, pass));
+                    cus.AddCustomer(new customer(int.Parse(id), name , mail, pass));
                     ContinueOrExit();
                     break;
 
                 case "2":
                     Console.Clear();
-                    GetCustomer();
+                    cus.GetCustomer();
                     ContinueOrExit();
                     break;
                 case "3":
@@ -219,19 +211,19 @@ namespace FishStoreConsole
                      mail = Console.ReadLine();
                     Console.WriteLine("Customer Password : ");
                      pass = Console.ReadLine();
-                    updateCustomername(id, mail , pass);
+                    cus.updateCustomername(id, mail , pass);
                     ContinueOrExit();
                     break;
                 case "4":
                     Console.Clear();
                     Console.WriteLine("Customer ID : ");
                     id = Console.ReadLine();
-                    deleteCustomer(id);
+                    cus.deleteCustomer(id);
 
                     ContinueOrExit();
                     break;
 
-                default: Console.WriteLine("Exited successfully. "); break;
+                default: Console.WriteLine("Exited successfully. "); Main(); break;
             }
         }
 
@@ -242,52 +234,7 @@ namespace FishStoreConsole
             if (result == "y" || result == "Y") Menu();
             else Main();
         }
-        static void deleteCustomer(string id)
-        {
-            var xdoc = XDocument.Load(xmlfile);
-            var tgtcustomer = xdoc.Root.Descendants("CUSTOMER").FirstOrDefault(x => x.Attribute("id").Value == id);
-            tgtcustomer.Remove();
-            xdoc.Save(xmlfile);
+        
 
-            Console.WriteLine("Customer details deleted successfully.");
-
-        }
-        static void updateCustomername(string id, string newEmail, string newPass)
-        {
-            var xdoc = XDocument.Load(xmlfile);
-            var tgtUpdate = xdoc.Root.Descendants("CUSTOMER").FirstOrDefault(x => x.Attribute("id").Value == id);
-            tgtUpdate.Element("EMAIL").Value = newEmail;
-            tgtUpdate.Element("PASS").Value = newPass;
-            xdoc.Save(xmlfile);
-            Console.WriteLine("Name updated successfully.");
-
-        }
-        static void GetCustomer()
-        {
-            var xdoc = XDocument.Load(xmlfile);
-            var getcust = xdoc.Root.Descendants("CUSTOMER").Select(x => new customer(int.Parse(x.Attribute("id").Value), x.Element("NAME").Value, x.Element("EMAIL").Value, x.Element("PASS").Value));
-
-            Console.WriteLine("The Customer Data is as follows : \n\n");
-            var table = new ConsoleTable("ID", "Name", "Email");
-            foreach (var m in getcust)
-            {
-                table.AddRow(m.id, m.name, m.email);
-            }
-            table.Write();
-
-        }
-        static void AddCustomer(customer cust)
-        {
-            // var cust = new customer(3 , "Albert");
-            var xdoc = XDocument.Load(xmlfile);
-            var xelement = new XElement("CUSTOMER", new XAttribute("id", cust.id), new XElement("NAME", cust.name), new XElement("EMAIL", cust.email), new XElement("PASS", cust.password));
-            xdoc.Root.Add(xelement);
-            xdoc.Save(xmlfile);
-            Console.WriteLine("Customer details added");
-        }
-
-
-    
-
-}
+    }
 }

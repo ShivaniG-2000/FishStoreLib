@@ -2,8 +2,8 @@
 <CUSTOMERS>
   <CUSTOMER id="1">
     <NAME>Shivani Goswami</NAME>
-    <EMAIL>shivani@gmail.com</EMAIL>
-    <PASS>shivani</PASS>
+    <EMAIL>shivani88@gmail.com</EMAIL>
+    <PASS>shi88</PASS>
   </CUSTOMER>
   <CUSTOMER id="2">
     <NAME>Romila</NAME>
@@ -24,15 +24,5 @@
     <NAME>Imam</NAME>
     <EMAIL>imam@gmail.com</EMAIL>
     <PASS>imam</PASS>
-  </CUSTOMER>
-  <CUSTOMER id="6">
-    <NAME>Shakshi</NAME>
-    <EMAIL>shakshi@gmail.com</EMAIL>
-    <PASS>shakshi</PASS>
-  </CUSTOMER>
-  <CUSTOMER id="8">
-    <NAME>jdsgjg</NAME>
-    <EMAIL>cfdx</EMAIL>
-    <PASS>vccx</PASS>
   </CUSTOMER>
 </CUSTOMERS>
